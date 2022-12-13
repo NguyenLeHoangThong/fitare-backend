@@ -11,17 +11,17 @@ export default class ExampleController {
 
                 const results = await client.raw("SELECT * FROM test")
 
-                res.send({
+                res.json({
+                    status: 200,
                     data: results?.rows
-                })
+                });
             }
             catch (err) {
                 console.log("Error database: ", err)
+                return res.status(500).send("Server error !!!");
             }
         } catch (error) {
-            return res.send({
-                detail: error?.message
-            });
+            return res.status(500).send("Server error !!!");
         }
     }
 }
