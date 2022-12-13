@@ -5,7 +5,6 @@ import { getConnection } from '../../../utils/connectDatabase.js'; // create a k
 export default class ExampleController {
     static async exampleAction(req, res) {
         try {
-            console.log("Example controller action");
             try {
                 const client = getConnection();
 
