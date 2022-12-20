@@ -1,1 +1,0 @@
-export { exampleRouter } from './example.route.js';
