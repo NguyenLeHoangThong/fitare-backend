@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { exercisePlanRouter } from "./exerciseplan/exerciseplan.route.js";
+import { exercisePlansRouter } from "./exerciseplans/exerciseplans.route.js";
 
 export const mainRouter = Router();
 
-mainRouter.use('/exerciseplan', exercisePlanRouter);
+mainRouter.use('/exerciseplans', exercisePlansRouter);

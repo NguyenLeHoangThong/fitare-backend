@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export default class ExercisePlanValidation {
+export default class ExercisePlansValidation {
     static postValidation(req) {
         const data = req?.body;
 

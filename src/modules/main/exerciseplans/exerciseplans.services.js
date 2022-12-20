@@ -1,4 +1,4 @@
-export default class ExercisePlanServices {
+export default class ExercisePlansServices {
     static getReturnObject(data) {
         return ({
             id: data?.id,

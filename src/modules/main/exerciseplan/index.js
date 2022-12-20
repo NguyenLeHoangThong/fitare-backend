@@ -1,1 +1,0 @@
-export { exercisePlanRouter } from './exerciseplan.route.js';
