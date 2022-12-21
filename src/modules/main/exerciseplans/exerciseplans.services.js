@@ -10,13 +10,14 @@ export default class ExercisePlansServices {
             bmi: data?.bmi,
             hours: data?.hours,
             isActivate: data?.is_activate,
-            isCensored: data?.is_censored
+            isCensored: data?.is_censored,
+            trainerFirstName: data?.first_name,
+            trainerLastName: data?.last_name,
         })
     }
 
     static getQueryObject(data) {
         return ({
-            id: data?.id,
             name: data?.name,
             description: data?.description,
             trainer_id: data?.trainerId,

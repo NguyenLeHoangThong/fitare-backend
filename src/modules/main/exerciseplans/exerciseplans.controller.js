@@ -55,7 +55,23 @@ export default class ExercisePlansController {
         try {
             const client = await getConnection();
 
-            const results = await client.raw("SELECT id, name, description, trainer_id, level, muscle_group::varchar[] as muscle_group, hours, is_activate, is_censored FROM exercise_plan WHERE is_censored = TRUE and is_activate = TRUE");
+            const results = await client.raw(`
+            SELECT 
+            exercise_plan.id, 
+            exercise_plan.name, 
+            exercise_plan.description, 
+            exercise_plan.trainer_id, 
+            exercise_plan.level, 
+            exercise_plan.muscle_group::varchar[] as muscle_group, 
+            exercise_plan.hours, 
+            exercise_plan.is_activate, 
+            exercise_plan.is_censored,
+            trainer_profile.first_name,
+            trainer_profile.last_name
+            FROM exercise_plan 
+            INNER JOIN trainer_profile ON trainer_profile.user_id = exercise_plan.trainer_id
+            WHERE is_censored = TRUE and is_activate = TRUE
+            `);
 
             return res.status(200).send(results && results?.rows && results?.rows?.length ? results.rows.map((item) => ExercisePlansServices.getReturnObject(item)) : [])
         } catch (error) {

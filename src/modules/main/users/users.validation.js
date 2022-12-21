@@ -5,10 +5,9 @@ export default class UsersValidation {
         const data = req?.body;
 
         const schema = yup.object({
-            id: yup.number(),
-            uid: yup.string(),
-            email: yup.string(),
-            type: yup.string(),
+            firebaseUid: yup.string().required(),
+            email: yup.string().required().email(),
+            type: yup.string().required(),
             isActivate: yup.boolean()
         })
             .noUnknown()

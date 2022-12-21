@@ -14,7 +14,7 @@ export default class UsersController {
                     const data = UsersServices.getQueryObject(rawData);
                     return await client.transaction(async (trx) => {
                         try {
-                            const results = await trx('users')
+                            const results = await trx('user')
                                 .returning([
                                     'id',
                                     'firebase_uid',
@@ -53,7 +53,7 @@ export default class UsersController {
             const id = req.params.id
 
             if (id) {
-                const results = await client.raw(`SELECT id, firebase_uid, email, type, is_activate FROM "users" WHERE is_activate = TRUE and id = ${id}`);
+                const results = await client.raw(`SELECT id, firebase_uid, email, type, is_activate FROM "user" WHERE is_activate = TRUE and id = ${id}`);
                 
                 if (results.rows.length == 0){
                     return res.status(404).send(({
