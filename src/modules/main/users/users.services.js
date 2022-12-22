@@ -11,7 +11,6 @@ export default class UsersServices {
 
     static getQueryObject(data) {
         return ({
-            id: data?.id,
             firebase_uid: data?.firebaseUid,
             email: data?.email,
             type: data?.type,

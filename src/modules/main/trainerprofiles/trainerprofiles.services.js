@@ -17,7 +17,6 @@ export default class TrainerProfilesServices {
 
     static getQueryObject(data) {
         return ({
-            id: data?.id,
             avatar_url: data?.avatarUrl,
             first_name: data?.firstName,
             last_name: data?.lastName,
