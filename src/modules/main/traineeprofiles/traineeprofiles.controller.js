@@ -1,20 +1,20 @@
-import TrainerProfilesValidation from "./trainerprofiles.validation.js"; // validate request (missing data, wrong datatype, ...)
-import TrainerProfilesServices from "./trainerprofiles.services.js"; // integrated with some custom services (if needed)
+import TraineeProfilesValidation from "./traineeprofiles.validation.js"; // validate request (missing data, wrong datatype, ...)
+import TraineeProfilesServices from "./traineeprofiles.services.js"; // integrated with some custom services (if needed)
 import { getConnection } from '../../../utils/connectDatabase.js'; // create a knex object (to handle database)
 
-export default class TrainerProfilesController {
-    static async createNewTrainer(req, res) {
+export default class TraineeProfilesController {
+    static async createNewTrainee(req, res) {
         try {
             const client = await getConnection();
 
             try {
-                const rawData = TrainerProfilesValidation.postValidation(req);
+                const rawData = TraineeProfilesValidation.postValidation(req);
 
                 if (rawData) {
-                    const data = TrainerProfilesServices.getQueryObject(rawData);
+                    const data = TraineeProfilesServices.getQueryObject(rawData);
                     return await client.transaction(async (trx) => {
                         try {
-                            const results = await trx('trainer_profile')
+                            const results = await trx('trainee_profile')
                                 .returning([
                                     'id',
                                     'avatar_url',
@@ -22,11 +22,10 @@ export default class TrainerProfilesController {
                                     'last_name',
                                     'phone',
                                     'user_id',
-                                    'admin_id'
                                 ])
                                 .insert(data)
 
-                            return res.status(200).send(results && results.length ? TrainerProfilesServices.getReturnObject(results[0]) : null);
+                            return res.status(200).send(results && results.length ? TraineeProfilesServices.getReturnObject(results[0]) : null);
                         }
                         catch (e) {
                             return res.status(404).send({
@@ -48,21 +47,21 @@ export default class TrainerProfilesController {
         }
     }
 
-    static async getAvailableTrainerProfiles(req, res) {
+    static async getAvailableTraineeProfiles(req, res) {
         try {
             const client = await getConnection();
 
             const id = req.params.id
 
             if (id) {
-                const results = await client.raw(`SELECT T.id, avatar_url, first_name, last_name, phone, user_id, admin_id, firebase_uid, email, type, is_activate FROM trainer_profile as T inner join "user" as A on (A.id = T.user_id) WHERE A.is_activate = TRUE and T.id = ${id}`);
+                const results = await client.raw(`SELECT T.id, avatar_url, first_name, last_name, phone, user_id, firebase_uid, email, type, is_activate FROM trainee_profile as T inner join "user" as A on (A.id = T.user_id) WHERE A.is_activate = TRUE and T.id = ${id}`);
                 
                 if (results.rows.length == 0){
                     return res.status(404).send(({
                         error: "Not found id"
                     }))
                 } else {
-                return res.status(200).send(results && results?.rows && results?.rows?.length ? TrainerProfilesServices.getReturnObject(results.rows[0]) : {})}
+                return res.status(200).send(results && results?.rows && results?.rows?.length ? TraineeProfilesServices.getReturnObject(results.rows[0]) : {})}
             } else {
                 return res.status(404).send(({
                     error: "Not found id"
@@ -75,26 +74,25 @@ export default class TrainerProfilesController {
         }
     }
 
-    static async updateTrainer(req, res) {
+    static async updateTrainee(req, res) {
         try {
             const client = await getConnection();
 
              try {
-                const rawData = TrainerProfilesValidation.updateValidation(req);
+                const rawData = TraineeProfilesValidation.updateValidation(req);
 
                 if (rawData) {
-                    const data = TrainerProfilesServices.getQueryObject(rawData);
+                    const data = TraineeProfilesServices.getQueryObject(rawData);
                     return await client.transaction(async (trx) => {
                         try {
-                            const results = await trx('trainer_profile')
+                            const results = await trx('trainee_profile')
                                 .returning([
                                     'id',
                                     'avatar_url',
                                     'first_name',
                                     'last_name',
                                     'phone',
-                                    'user_id',
-                                    'admin_id'
+                                    'user_id'
                                 ])
                                 .where({id : req.params.id})
                                 .update({
@@ -102,11 +100,10 @@ export default class TrainerProfilesController {
                                     first_name : data?.first_name,
                                     last_name : data?.last_name,
                                     phone : data?.phone,
-                                    user_id : data?.user_id,
-                                    admin_id : data?.admin_id
+                                    user_id : data?.user_id
                                 })
 
-                            return res.status(200).send(results && results.length ? TrainerProfilesServices.getReturnObject(results[0]) : null);
+                            return res.status(200).send(results && results.length ? TraineeProfilesServices.getReturnObject(results[0]) : null);
                         }
                         catch (e) {
                             return res.status(404).send({

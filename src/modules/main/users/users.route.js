@@ -5,3 +5,4 @@ export const UsersRouter = Router();
 
 UsersRouter.route('/').post(UsersController.createNewUser);
 UsersRouter.route('/:id').get(UsersController.getAvailableUsers);
+UsersRouter.route('/:id').put(UsersController.updateUser);

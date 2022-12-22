@@ -14,4 +14,18 @@ export default class UsersValidation {
 
         return schema.validateSync(data)
     }
+
+    static updateValidation(req) {
+        const data = req?.body;
+
+        const schema = yup.object({
+            firebaseUid: yup.string(),
+            email: yup.string().email(),
+            type: yup.string(),
+            isActivate: yup.string()
+        })
+            .noUnknown()
+
+        return schema.validateSync(data)
+    }
 }

@@ -72,4 +72,53 @@ export default class UsersController {
             }))
         }
     }
+
+    static async updateUser(req, res) {
+        try {
+            const client = await getConnection();
+
+             try {
+                const rawData = UsersValidation.updateValidation(req);
+
+                if (rawData) {
+                    const data = UsersServices.getQueryObject(rawData);
+                    return await client.transaction(async (trx) => {
+                        try {
+                            const results = await trx('user')
+                                .returning([
+                                    'id',
+                                    'firebase_uid',
+                                    'email',
+                                    'type',
+                                    'is_activate'
+                                ])
+                                .where({id : req.params.id})
+                                .update({
+                                    firebase_uid : data?.firebase_uid,
+                                    email : data?.email,
+                                    type : data?.type,
+                                    is_activate : data?.is_activate
+                                })
+
+                            return res.status(200).send(results && results.length ? UsersServices.getReturnObject(results[0]) : null);
+                        }
+                        catch (e) {
+                            return res.status(404).send({
+                                message: e?.message || e
+                            })
+                        }
+                    })
+                }
+            }
+            catch (error) {
+                return res.status(400).send(({
+                    error: error?.message || error
+                }))
+            }
+        } catch (error) {
+            return res.status(500).send(({
+                error: error?.message || error
+           }))
+        }
+    }
 }
