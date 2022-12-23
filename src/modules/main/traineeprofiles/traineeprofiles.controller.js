@@ -1,6 +1,7 @@
 import TraineeProfilesValidation from "./traineeprofiles.validation.js"; // validate request (missing data, wrong datatype, ...)
 import TraineeProfilesServices from "./traineeprofiles.services.js"; // integrated with some custom services (if needed)
 import { getConnection } from '../../../utils/connectDatabase.js'; // create a knex object (to handle database)
+import moment from "../../../../node_modules/moment/moment.js";
 
 export default class TraineeProfilesController {
     static async createNewTrainee(req, res) {
@@ -100,9 +101,10 @@ export default class TraineeProfilesController {
                                     first_name : data?.first_name,
                                     last_name : data?.last_name,
                                     phone : data?.phone,
-                                    user_id : data?.user_id
+                                    user_id : data?.user_id,
+                                    modified: moment()
                                 })
-
+                            
                             return res.status(200).send(results && results.length ? TraineeProfilesServices.getReturnObject(results[0]) : null);
                         }
                         catch (e) {

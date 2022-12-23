@@ -1,6 +1,7 @@
 import TrainerProfilesValidation from "./trainerprofiles.validation.js"; // validate request (missing data, wrong datatype, ...)
 import TrainerProfilesServices from "./trainerprofiles.services.js"; // integrated with some custom services (if needed)
 import { getConnection } from '../../../utils/connectDatabase.js'; // create a knex object (to handle database)
+import moment from "../../../../node_modules/moment/moment.js";
 
 export default class TrainerProfilesController {
     static async createNewTrainer(req, res) {
@@ -103,7 +104,8 @@ export default class TrainerProfilesController {
                                     last_name : data?.last_name,
                                     phone : data?.phone,
                                     user_id : data?.user_id,
-                                    admin_id : data?.admin_id
+                                    admin_id : data?.admin_id,
+                                    modified: moment()
                                 })
 
                             return res.status(200).send(results && results.length ? TrainerProfilesServices.getReturnObject(results[0]) : null);
