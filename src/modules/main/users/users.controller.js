@@ -1,7 +1,7 @@
 import UsersValidation from "./users.validation.js"; // validate request (missing data, wrong datatype, ...)
 import UsersServices from "./users.services.js"; // integrated with some custom services (if needed)
 import { getConnection } from '../../../utils/connectDatabase.js'; // create a knex object (to handle database)
-import moment from "../../../../node_modules/moment/moment.js";
+import moment from 'moment';
 
 export default class UsersController {
     static async createNewUser(req, res) {
