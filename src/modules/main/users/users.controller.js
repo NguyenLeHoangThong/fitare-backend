@@ -47,14 +47,14 @@ export default class UsersController {
         }
     }
 
-    static async getAvailableUsers(req, res) {
+    static async getUser(req, res) {
         try {
             const client = await getConnection();
 
-            const id = req.params.id
+            const id = req.query.uid;
 
             if (id) {
-                const results = await client.raw(`SELECT id, firebase_uid, email, type, is_activate FROM "user" WHERE is_activate = TRUE and id = ${id}`);
+                const results = await client.raw(`SELECT id, firebase_uid, email, type, is_activate FROM "user" WHERE is_activate = TRUE and firebase_uid = '${id}'`);
                 
                 if (results.rows.length == 0){
                     return res.status(404).send(({
