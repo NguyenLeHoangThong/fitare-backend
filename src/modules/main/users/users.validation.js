@@ -22,7 +22,7 @@ export default class UsersValidation {
             firebaseUid: yup.string(),
             email: yup.string().email(),
             type: yup.string(),
-            isActivate: yup.string()
+            isActivate: yup.boolean()
         })
             .noUnknown()
 
