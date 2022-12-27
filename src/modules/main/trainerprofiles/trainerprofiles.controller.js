@@ -56,7 +56,7 @@ export default class TrainerProfilesController {
             const id = req.params.id
 
             if (id) {
-                const results = await client.raw(`SELECT T.id, avatar_url, first_name, last_name, phone, user_id, admin_id, firebase_uid, email, type, is_activate FROM trainer_profile as T inner join "user" as A on (A.id = T.user_id) WHERE A.is_activate = TRUE and T.id = ${id}`);
+                const results = await client.raw(`SELECT T.id, avatar_url, first_name, last_name, phone, user_id, admin_id, firebase_uid, email, type, is_activate FROM trainer_profile as T inner join "user" as A on (A.id = T.user_id) WHERE A.is_activate = TRUE and T.user_id = ${id}`);
                 
                 if (results.rows.length == 0){
                     return res.status(404).send(({
