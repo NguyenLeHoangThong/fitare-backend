@@ -226,4 +226,138 @@ export default class ExercisePlansController {
             }))
         }
     }
+
+    static async getUserFavoriteExercisePlans(req, res) {
+        try {
+            const client = await getConnection();
+
+            const userId = req.params.userId;
+
+            const results = await client.raw(`
+                SELECT 
+                exercise_plan.id, 
+                exercise_plan.name, 
+                exercise_plan.description, 
+                exercise_plan.trainer_id, 
+                exercise_plan.level, 
+                exercise_plan.muscle_group::varchar[] as muscle_group, 
+                exercise_plan.hours, 
+                exercise_plan.is_activate, 
+                exercise_plan.is_censored,
+                trainer_profile.first_name,
+                trainer_profile.last_name,
+                user_selected_exercise.status
+                FROM exercise_plan 
+                INNER JOIN trainer_profile ON trainer_profile.user_id = exercise_plan.trainer_id
+                INNER JOIN user_selected_exercise ON user_selected_exercise.exercise_plan_id = exercise_plan.id
+                WHERE is_censored = TRUE and is_activate = TRUE and user_selected_exercise.user_id = ${userId}
+                `);
+            return res.status(200).send(results && results?.rows && results?.rows?.length ? results.rows.map((item) => ExercisePlansServices.getReturnObject(item)) : [])
+        } catch (error) {
+            return res.status(404).send(({
+                error: error?.message || error
+            }))
+        }
+    }
+
+    static async postUserFavoriteExercisePlan(req, res) {
+        try {
+            const client = await getConnection();
+
+            const userId = req.params.userId;
+            const exercisePlanId = req.params.exercisePlanId;
+            const status = req.body.status;
+            
+            try {
+                if (userId && exercisePlanId && status) {
+                    const data = {
+                        user_id: userId,
+                        exercise_plan_id: exercisePlanId,
+                        status: status
+                    };
+                    return await client.transaction(async (trx) => {
+                        try {
+                            const results = await trx('user_selected_exercise')
+                                .returning([
+                                    'id',
+                                    'user_id',
+                                    'exercise_plan_id',
+                                    'status'
+                                ])
+                                .insert(data)
+
+                            return res.status(200).send(results && results.length ? ExercisePlansServices.getReturnObjectOfUserSelectedExercisePlan(results[0]) : null);
+                        }
+                        catch (e) {
+                            return res.status(404).send({
+                                message: e?.message || e
+                            })
+                        }
+                    })
+                }
+            }
+            catch (error) {
+                return res.status(400).send(({
+                    error: error?.message || error
+                }))
+            }
+        } catch (error) {
+            return res.status(500).send(({
+                error: error?.message || error
+            }))
+        }
+    }
+
+    static async updateUserFavoriteExercisePlan(req, res) {
+        try {
+            const client = await getConnection();
+
+            const userId = req.params.userId;
+            const exercisePlanId = req.params.exercisePlanId;
+            const status = req.body.status;
+            
+            try {
+                if (userId && exercisePlanId && status) {
+                    const data = {
+                        user_id: userId,
+                        exercise_plan_id: exercisePlanId,
+                        status: status,
+                        modified: moment()
+                    };
+                    return await client.transaction(async (trx) => {
+                        try {
+                            const results = await trx('user_selected_exercise')
+                                .returning([
+                                    'id',
+                                    'user_id',
+                                    'exercise_plan_id',
+                                    'status'
+                                ])
+                                .where({
+                                    user_id: userId,
+                                    exercise_plan_id: exercisePlanId
+                                })
+                                .update(data)
+
+                            return res.status(200).send(results && results.length ? ExercisePlansServices.getReturnObjectOfUserSelectedExercisePlan(results[0]) : null);
+                        }
+                        catch (e) {
+                            return res.status(404).send({
+                                message: e?.message || e
+                            })
+                        }
+                    })
+                }
+            }
+            catch (error) {
+                return res.status(400).send(({
+                    error: error?.message || error
+                }))
+            }
+        } catch (error) {
+            return res.status(500).send(({
+                error: error?.message || error
+            }))
+        }
+    }
 }

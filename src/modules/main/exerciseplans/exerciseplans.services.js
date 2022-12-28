@@ -13,6 +13,7 @@ export default class ExercisePlansServices {
             isCensored: data?.is_censored,
             trainerFirstName: data?.first_name,
             trainerLastName: data?.last_name,
+            status: data?.status
         })
     }
 
@@ -27,6 +28,15 @@ export default class ExercisePlansServices {
             hours: data?.hours,
             is_activate: data?.isActivate,
             is_censored: data?.isCensored
+        })
+    }
+
+    static getReturnObjectOfUserSelectedExercisePlan(data) {
+        return ({
+            id: data?.id,
+            userId: data?.user_id,
+            exercisePlanId: data?.exercise_plan_id,
+            status: data?.status
         })
     }
 }
