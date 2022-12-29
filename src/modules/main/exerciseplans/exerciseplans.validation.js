@@ -14,7 +14,8 @@ export default class ExercisePlansValidation {
             bmi: yup.string(),
             hours: yup.string(),
             isActivate: yup.boolean(),
-            isCensored: yup.boolean()
+            isCensored: yup.boolean(),
+            bannerImageUrl: yup.string()
         })
             .noUnknown()
 
@@ -34,7 +35,8 @@ export default class ExercisePlansValidation {
             bmi: yup.string(),
             hours: yup.string(),
             isActivate: yup.boolean(),
-            isCensored: yup.boolean()
+            isCensored: yup.boolean(),
+            bannerImageUrl: yup.string()
         })
             .noUnknown()
 

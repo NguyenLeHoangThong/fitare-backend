@@ -26,7 +26,8 @@ export default class ExercisePlansController {
                                     'bmi',
                                     'hours',
                                     'is_activate',
-                                    'is_censored'
+                                    'is_censored',
+                                    'banner_image_url'
                                 ])
                                 .insert(data)
 
@@ -71,6 +72,7 @@ export default class ExercisePlansController {
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
                 exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
                 trainer_profile.first_name,
                 trainer_profile.last_name
                 FROM exercise_plan 
@@ -91,6 +93,7 @@ export default class ExercisePlansController {
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
                 exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
                 trainer_profile.first_name,
                 trainer_profile.last_name
                 FROM exercise_plan 
@@ -113,6 +116,7 @@ export default class ExercisePlansController {
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
                 exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
                 trainer_profile.first_name,
                 trainer_profile.last_name
                 FROM exercise_plan 
@@ -155,6 +159,7 @@ export default class ExercisePlansController {
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
                 exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
                 trainer_profile.first_name,
                 trainer_profile.last_name
                 FROM exercise_plan 
@@ -176,6 +181,7 @@ export default class ExercisePlansController {
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
                 exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
                 trainer_profile.first_name,
                 trainer_profile.last_name
                 FROM exercise_plan 
@@ -198,6 +204,7 @@ export default class ExercisePlansController {
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
                 exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
                 trainer_profile.first_name,
                 trainer_profile.last_name
                 FROM exercise_plan 
@@ -236,7 +243,8 @@ export default class ExercisePlansController {
                                     'bmi',
                                     'hours',
                                     'is_activate',
-                                    'is_censored'
+                                    'is_censored',
+                                    'banner_image_url'
                                 ])
                                 .where({ id: id })
                                 .update(data)
@@ -286,7 +294,8 @@ export default class ExercisePlansController {
                                     'bmi',
                                     'hours',
                                     'is_activate',
-                                    'is_censored'
+                                    'is_censored',
+                                    'banner_image_url'
                                 ])
                                 .where({ id: id })
                                 .update({
@@ -332,6 +341,7 @@ export default class ExercisePlansController {
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
                 exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
                 trainer_profile.first_name,
                 trainer_profile.last_name,
                 user_selected_exercise.status
