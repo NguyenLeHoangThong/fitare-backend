@@ -448,4 +448,26 @@ export default class ExercisePlansController {
             }))
         }
     }
+
+    static async deleteExercisePlan(req, res) {
+        try {
+            const client = await getConnection();
+
+            const id = req.params.id;
+
+            if (id) {
+                const results = await client.raw(` DELETE FROM exercise_plan where id = ${id}`);
+                
+                return res.status(200).send(`Deleted exercise plan has id = ${req.params.id}`)
+            } else {
+                return res.status(404).send(({
+                    error: "Not found id"
+                }))
+            }
+        } catch (error) {
+            return res.status(404).send(({
+                error: error?.message || error
+            }))
+        }
+    }
 }

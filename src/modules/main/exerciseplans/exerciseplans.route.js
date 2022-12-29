@@ -8,7 +8,9 @@ exercisePlansRouter.route('/').post(ExercisePlansController.createNewExercisePla
 exercisePlansRouter.route('/').get(ExercisePlansController.getAvailableExercisePlans);
 exercisePlansRouter.route('/:id').get(ExercisePlansController.getOneAvailableExercisePlan);
 exercisePlansRouter.route('/:id').put(ExercisePlansController.updateExercisePlan);
+exercisePlansRouter.route('/:id').delete(ExercisePlansController.deleteExercisePlan);
 exercisePlansRouter.route('/:id/censored').put(ExercisePlansController.censoredExercisePlan);
 exercisePlansRouter.route('/:exercisePlanId/exercises').get(ExercisesController.getAllExercisesOfAPlan);
 exercisePlansRouter.route('/:exercisePlanId/exercises').post(ExercisesController.createExercises);
 exercisePlansRouter.route('/:exercisePlanId/exercises').put(ExercisesController.updateExercisesOfAPlan);
+
