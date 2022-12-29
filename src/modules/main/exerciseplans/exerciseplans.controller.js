@@ -65,7 +65,8 @@ export default class ExercisePlansController {
                 exercise_plan.name, 
                 exercise_plan.description, 
                 exercise_plan.trainer_id, 
-                exercise_plan.level, 
+                exercise_plan.level,
+                exercise_plan.bmi,
                 exercise_plan.muscle_group::varchar[] as muscle_group, 
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
@@ -85,6 +86,7 @@ export default class ExercisePlansController {
                 exercise_plan.description, 
                 exercise_plan.trainer_id, 
                 exercise_plan.level, 
+                exercise_plan.bmi,
                 exercise_plan.muscle_group::varchar[] as muscle_group, 
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
@@ -106,6 +108,7 @@ export default class ExercisePlansController {
                 exercise_plan.description, 
                 exercise_plan.trainer_id, 
                 exercise_plan.level, 
+                exercise_plan.bmi,
                 exercise_plan.muscle_group::varchar[] as muscle_group, 
                 exercise_plan.hours, 
                 exercise_plan.is_activate, 
@@ -117,6 +120,91 @@ export default class ExercisePlansController {
                 WHERE is_censored = TRUE and is_activate = TRUE
                 `);
                 return res.status(200).send(results && results?.rows && results?.rows?.length ? results.rows.map((item) => ExercisePlansServices.getReturnObject(item)) : [])
+            }
+        } catch (error) {
+            return res.status(404).send(({
+                error: error?.message || error
+            }))
+        }
+    }
+
+    static async getOneAvailableExercisePlan(req, res) {
+        try {
+            const client = await getConnection();
+
+            const status = req.query.status;
+
+            const id = req.params.id;
+
+            if (isNaN(id)) {
+                return res.status(404).send(({
+                    error: "Not found id"
+                }))
+            }
+
+            if (status.toLowerCase() === "all") {
+                const results = await client.raw(`
+                SELECT 
+                exercise_plan.id, 
+                exercise_plan.name, 
+                exercise_plan.description, 
+                exercise_plan.trainer_id, 
+                exercise_plan.level,
+                exercise_plan.bmi,
+                exercise_plan.muscle_group::varchar[] as muscle_group, 
+                exercise_plan.hours, 
+                exercise_plan.is_activate, 
+                exercise_plan.is_censored,
+                trainer_profile.first_name,
+                trainer_profile.last_name
+                FROM exercise_plan 
+                INNER JOIN trainer_profile ON trainer_profile.user_id = exercise_plan.trainer_id
+                WHERE exercise_plan.id=${id}
+                `);
+                return res.status(200).send(results && results?.rows && results?.rows?.length ? ExercisePlansServices.getReturnObject(results.rows[0]) : null)
+            }
+            else if (status.toLowerCase() === "uncensored") {
+                const results = await client.raw(`
+                SELECT 
+                exercise_plan.id, 
+                exercise_plan.name, 
+                exercise_plan.description, 
+                exercise_plan.trainer_id, 
+                exercise_plan.level, 
+                exercise_plan.bmi,
+                exercise_plan.muscle_group::varchar[] as muscle_group, 
+                exercise_plan.hours, 
+                exercise_plan.is_activate, 
+                exercise_plan.is_censored,
+                trainer_profile.first_name,
+                trainer_profile.last_name
+                FROM exercise_plan 
+                INNER JOIN trainer_profile ON trainer_profile.user_id = exercise_plan.trainer_id
+                WHERE is_censored = FALSE and is_activate = TRUE and exercise_plan.id=${id}
+                `);
+
+                return res.status(200).send(results && results?.rows && results?.rows?.length ? ExercisePlansServices.getReturnObject(results.rows[0]) : null)
+            }
+            else if (status.toLowerCase() === "censored") {
+                const results = await client.raw(`
+                SELECT 
+                exercise_plan.id, 
+                exercise_plan.name, 
+                exercise_plan.description, 
+                exercise_plan.trainer_id, 
+                exercise_plan.level, 
+                exercise_plan.bmi,
+                exercise_plan.muscle_group::varchar[] as muscle_group, 
+                exercise_plan.hours, 
+                exercise_plan.is_activate, 
+                exercise_plan.is_censored,
+                trainer_profile.first_name,
+                trainer_profile.last_name
+                FROM exercise_plan 
+                INNER JOIN trainer_profile ON trainer_profile.user_id = exercise_plan.trainer_id
+                WHERE is_censored = TRUE and is_activate = TRUE and exercise_plan.id=${id}
+                `);
+                return res.status(200).send(results && results?.rows && results?.rows?.length ? ExercisePlansServices.getReturnObject(results.rows[0]) : null)
             }
         } catch (error) {
             return res.status(404).send(({
