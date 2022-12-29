@@ -58,7 +58,10 @@ export default class ExercisesController {
         try {
             const client = await getConnection();
 
-            const results = await client.raw(`
+            const exercisePlanId = req.params.exercisePlanId;
+
+            if (exercisePlanId) {
+                const results = await client.raw(`
                 SELECT 
                 exercise.id, 
                 exercise.name, 
@@ -70,9 +73,16 @@ export default class ExercisesController {
                 exercise_plan.name as exercise_plan_name
                 FROM exercise 
                 INNER JOIN exercise_plan ON exercise.exercise_plan_id = exercise_plan.id
+                WHERE exercise_plan.id = ${exercisePlanId}
                 ORDER BY step
                 `);
-            return res.status(200).send(results && results?.rows && results?.rows?.length ? results.rows.map((item) => ExercisesServices.getReturnObject(item)) : [])
+                return res.status(200).send(results && results?.rows && results?.rows?.length ? results.rows.map((item) => ExercisesServices.getReturnObject(item)) : [])
+            }
+            else {
+                return res.status(404).send(({
+                    error: "Not found id"
+                }))
+            }
         } catch (error) {
             return res.status(404).send(({
                 error: error?.message || error
@@ -97,7 +107,7 @@ export default class ExercisesController {
                     const data = rawData.map((item) => ExercisesServices.getQueryObject(item, exercisePlanId));
                     return await client.transaction(async (trx) => {
                         try {
-                            const mainResults = data.map((item) => 
+                            const mainResults = data.map((item) =>
                                 client('exercise')
                                     .returning([
                                         'id',
@@ -108,7 +118,7 @@ export default class ExercisesController {
                                         'exercise_plan_id',
                                         'step'
                                     ])
-                                    .where('id', item?.id )
+                                    .where('id', item?.id)
                                     .update(item)
                                     .transacting(trx)
                             )
