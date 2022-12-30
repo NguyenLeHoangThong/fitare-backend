@@ -358,6 +358,47 @@ export default class ExercisePlansController {
         }
     }
 
+    static async getTrainerCreatedPlans(req, res) {
+        try {
+            const client = await getConnection();
+
+            const id = req.params.id;
+
+            if (id) {
+                const results = await client.raw(`
+                SELECT 
+                exercise_plan.id, 
+                exercise_plan.name, 
+                exercise_plan.description, 
+                exercise_plan.trainer_id, 
+                exercise_plan.level, 
+                exercise_plan.muscle_group::varchar[] as muscle_group,
+                exercise_plan.bmi, 
+                exercise_plan.hours, 
+                exercise_plan.is_activate, 
+                exercise_plan.is_censored,
+                exercise_plan.banner_image_url,
+                trainer_profile.first_name,
+                trainer_profile.last_name
+                FROM exercise_plan 
+                INNER JOIN trainer_profile ON trainer_profile.user_id = exercise_plan.trainer_id
+                WHERE exercise_plan.trainer_id = ${id}
+                `);
+                return res.status(200).send(results && results?.rows && results?.rows?.length ? results.rows.map((item) => ExercisePlansServices.getReturnObject(item)) : [])
+            }
+            else {
+                return res.status(404).send(({
+                    error: "Not found trainer id"
+                }))
+            }
+
+        } catch (error) {
+            return res.status(404).send(({
+                error: error?.message || error
+            }))
+        }
+    }
+
     static async postUserFavoriteExercisePlan(req, res) {
         try {
             const client = await getConnection();
@@ -365,7 +406,7 @@ export default class ExercisePlansController {
             const userId = req.params.userId;
             const exercisePlanId = req.params.exercisePlanId;
             const status = req.body.status;
-            
+
             try {
                 if (userId && exercisePlanId && status) {
                     const data = {
@@ -413,7 +454,7 @@ export default class ExercisePlansController {
             const userId = req.params.userId;
             const exercisePlanId = req.params.exercisePlanId;
             const status = req.body.status;
-            
+
             try {
                 if (userId && exercisePlanId && status) {
                     const data = {
@@ -467,7 +508,7 @@ export default class ExercisePlansController {
 
             if (id) {
                 const results = await client.raw(` DELETE FROM exercise_plan where id = ${id}`);
-                
+
                 return res.status(200).send(`Deleted exercise plan has id = ${req.params.id}`)
             } else {
                 return res.status(404).send(({

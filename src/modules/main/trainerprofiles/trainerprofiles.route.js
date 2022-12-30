@@ -7,6 +7,7 @@ export const TrainerProfilesRouter = Router();
 TrainerProfilesRouter.route('/').post(TrainerProfilesController.createNewTrainer);
 TrainerProfilesRouter.route('/:id').get(TrainerProfilesController.getAvailableTrainerProfiles);
 TrainerProfilesRouter.route('/:id').put(TrainerProfilesController.updateTrainer);
+TrainerProfilesRouter.route('/:id/exerciseplans/created').get(ExercisePlansController.getTrainerCreatedPlans);
 TrainerProfilesRouter.route('/:userId/exerciseplans').get(ExercisePlansController.getUserFavoriteExercisePlans);
 TrainerProfilesRouter.route('/:userId/exerciseplans/:exercisePlanId').post(ExercisePlansController.postUserFavoriteExercisePlan);
 TrainerProfilesRouter.route('/:userId/exerciseplans/:exercisePlanId').put(ExercisePlansController.updateUserFavoriteExercisePlan);

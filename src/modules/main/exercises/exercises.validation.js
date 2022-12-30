@@ -8,9 +8,9 @@ export default class ExercisesValidation {
             id: yup.number(),
             name: yup.string().required(),
             instruction: yup.string(),
-            tutorial_video_url: yup.string(),
-            banner_image_url: yup.string(),
-            exercise_plan_id: yup.number(),
+            tutorialVideoUrl: yup.string(),
+            bannerImageUrl: yup.string(),
+            exercisePlanId: yup.number(),
             step: yup.string().required()
         })
             .noUnknown()
@@ -25,10 +25,10 @@ export default class ExercisesValidation {
             id: yup.number().required(),
             name: yup.string(),
             instruction: yup.string(),
-            tutorial_video_url: yup.string(),
-            banner_image_url: yup.string(),
-            exercise_plan_id: yup.number(),
-            step: yup.string()
+            tutorialVideoUrl: yup.string(),
+            bannerImageUrl: yup.string(),
+            exercisePlanId: yup.number(),
+            step: yup.string().required()
         })
             .noUnknown()
 
