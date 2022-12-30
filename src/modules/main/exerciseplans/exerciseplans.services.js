@@ -10,13 +10,16 @@ export default class ExercisePlansServices {
             bmi: data?.bmi,
             hours: data?.hours,
             isActivate: data?.is_activate,
-            isCensored: data?.is_censored
+            isCensored: data?.is_censored,
+            trainerFirstName: data?.first_name,
+            trainerLastName: data?.last_name,
+            status: data?.status,
+            bannerImageUrl: data?.banner_image_url
         })
     }
 
     static getQueryObject(data) {
         return ({
-            id: data?.id,
             name: data?.name,
             description: data?.description,
             trainer_id: data?.trainerId,
@@ -25,7 +28,17 @@ export default class ExercisePlansServices {
             bmi: data?.bmi,
             hours: data?.hours,
             is_activate: data?.isActivate,
-            is_censored: data?.isCensored
+            is_censored: data?.isCensored,
+            banner_image_url: data?.bannerImageUrl
+        })
+    }
+
+    static getReturnObjectOfUserSelectedExercisePlan(data) {
+        return ({
+            id: data?.id,
+            userId: data?.user_id,
+            exercisePlanId: data?.exercise_plan_id,
+            status: data?.status
         })
     }
 }
