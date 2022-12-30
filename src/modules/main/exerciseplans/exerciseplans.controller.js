@@ -16,20 +16,8 @@ export default class ExercisePlansController {
                     return await client.transaction(async (trx) => {
                         try {
                             const results = await trx('exercise_plan')
-                                .returning([
-                                    'id',
-                                    'name',
-                                    'description',
-                                    'trainer_id',
-                                    'level',
-                                    'muscle_group',
-                                    'bmi',
-                                    'hours',
-                                    'is_activate',
-                                    'is_censored',
-                                    'banner_image_url'
-                                ])
                                 .insert(data)
+                                .returning(client.raw("id, name, description, trainer_id, level, bmi, is_activate, is_censored, banner_image_url, muscle_group::varchar[] AS muscle_group"))
 
                             return res.status(200).send(results && results.length ? ExercisePlansServices.getReturnObject(results[0]) : null);
                         }
