@@ -17,7 +17,7 @@ export default class ExercisePlansController {
                         try {
                             const results = await trx('exercise_plan')
                                 .insert(data)
-                                .returning(client.raw("id, name, description, trainer_id, level, bmi, is_activate, is_censored, banner_image_url, muscle_group::varchar[] AS muscle_group"))
+                                .returning(client.raw("id, name, description, trainer_id, level, hours, bmi, is_activate, is_censored, banner_image_url, muscle_group::varchar[] AS muscle_group"))
 
                             return res.status(200).send(results && results.length ? ExercisePlansServices.getReturnObject(results[0]) : null);
                         }
@@ -221,19 +221,7 @@ export default class ExercisePlansController {
                     return await client.transaction(async (trx) => {
                         try {
                             const results = await trx('exercise_plan')
-                                .returning([
-                                    'id',
-                                    'name',
-                                    'description',
-                                    'trainer_id',
-                                    'level',
-                                    'muscle_group',
-                                    'bmi',
-                                    'hours',
-                                    'is_activate',
-                                    'is_censored',
-                                    'banner_image_url'
-                                ])
+                                .returning(client.raw("id, name, description, trainer_id, level, hours, bmi, is_activate, is_censored, banner_image_url, muscle_group::varchar[] AS muscle_group"))
                                 .where({ id: id })
                                 .update(data)
 
