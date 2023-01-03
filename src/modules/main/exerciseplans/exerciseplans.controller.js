@@ -300,6 +300,59 @@ export default class ExercisePlansController {
         }
     }
 
+    static async notCensoredExercisePlan(req, res) {
+        try {
+            const client = await getConnection();
+
+            const id = req.params.id;
+            try {
+                const rawData = ExercisePlansValidation.putValidation(req);
+
+                if (rawData) {
+                    const data = ExercisePlansServices.getQueryObject(rawData);
+                    return await client.transaction(async (trx) => {
+                        try {
+                            const results = await trx('exercise_plan')
+                                .returning([
+                                    'id',
+                                    'name',
+                                    'description',
+                                    'trainer_id',
+                                    'level',
+                                    'muscle_group',
+                                    'bmi',
+                                    'hours',
+                                    'is_activate',
+                                    'is_censored',
+                                    'banner_image_url'
+                                ])
+                                .where({ id: id })
+                                .update({
+                                    is_activate: false
+                                })
+
+                            return res.status(200).send(results && results.length ? ExercisePlansServices.getReturnObject(results[0]) : null);
+                        }
+                        catch (e) {
+                            return res.status(404).send({
+                                message: e?.message || e
+                            })
+                        }
+                    })
+                }
+            }
+            catch (error) {
+                return res.status(400).send(({
+                    error: error?.message || error
+                }))
+            }
+        } catch (error) {
+            return res.status(500).send(({
+                error: error?.message || error
+            }))
+        }
+    }
+
     static async getUserFavoriteExercisePlans(req, res) {
         try {
             const client = await getConnection();
